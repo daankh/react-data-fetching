@@ -1,22 +1,53 @@
-import React, { Component } from 'react';
-
-import './FullPost.css';
+import React, { Component } from "react";
+import axios from "axios";
+import "./FullPost.css";
 
 class FullPost extends Component {
-    render () {
-        let post = <p>Please select a Post!</p>;
-        post = (
-            <div className="FullPost">
-                <h1>Title</h1>
-                <p>Content</p>
-                <div className="Edit">
-                    <button className="Delete">Delete</button>
-                </div>
-            </div>
+  state = {
+    loadedPost: null,
+  };
 
-        );
-        return post;
+  componentDidUpdate() {
+    const { id } = this.props;
+    const { loadedPost } = this.state;
+    if (id) {
+      if (!loadedPost || (loadedPost && id !== loadedPost.id)) {
+        axios
+          .get(`https://jsonplaceholder.typicode.com/posts/${id}`)
+          .then((response) => {
+            const { data } = response;
+            this.setState({
+              loadedPost: data,
+            });
+          });
+      }
     }
+  }
+
+  render() {
+    const { id } = this.props;
+    const { loadedPost } = this.state;
+
+    let post = <p style={{ textAlign: "center" }}>Please select a Post!</p>;
+
+    if (id) {
+      post = <p style={{ textAlign: "center" }}>Loading...</p>;
+    }
+
+    if (loadedPost) {
+      post = (
+        <div className="FullPost">
+          <h1>{loadedPost.title}</h1>
+          <p>{loadedPost.body}</p>
+          <div className="Edit">
+            <button className="Delete">Delete</button>
+          </div>
+        </div>
+      );
+    }
+
+    return post;
+  }
 }
 
 export default FullPost;
