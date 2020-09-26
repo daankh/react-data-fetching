@@ -9,20 +9,30 @@ class Blog extends Component {
   state = {
     posts: [],
     selectedPostId: null,
+    error: null,
   };
 
   componentDidMount() {
-    axios.get("https://jsonplaceholder.typicode.com/posts").then((response) => {
-      const { data } = response;
-      const posts = data.slice(0, 4);
-      const updatedProps = posts.map((post) => ({
-        ...post,
-        author: "Daniel",
-      }));
-      this.setState({
-        posts: updatedProps,
+    axios
+      .get("https://jsonplaceholder.typicode.com/posts")
+      .then((response) => {
+        const { data } = response;
+        const posts = data.slice(0, 4);
+        const updatedProps = posts.map((post) => ({
+          ...post,
+          author: "Daniel",
+        }));
+        this.setState({
+          posts: updatedProps,
+          error: null,
+        });
+      })
+      .catch((err) => {
+        this.setState({
+          posts: null,
+          error: "Something went wrong! No data fetched!",
+        });
       });
-    });
   }
 
   postSelectedHandler = (id) => {
@@ -32,18 +42,20 @@ class Blog extends Component {
   };
 
   render() {
-    const { posts, selectedPostId } = this.state;
+    const { posts, selectedPostId, error } = this.state;
     return (
       <div>
         <section className="Posts">
-          {posts.map((post) => (
-            <Post
-              key={post.id}
-              title={post.title}
-              author={post.author}
-              clicked={this.postSelectedHandler.bind(this, post.id)}
-            />
-          ))}
+          {error && <p>{error}</p>}
+          {posts &&
+            posts.map((post) => (
+              <Post
+                key={post.id}
+                title={post.title}
+                author={post.author}
+                clicked={this.postSelectedHandler.bind(this, post.id)}
+              />
+            ))}
         </section>
         <section>
           <FullPost id={selectedPostId} />
