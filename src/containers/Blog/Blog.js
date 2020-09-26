@@ -14,7 +14,7 @@ class Blog extends Component {
 
   componentDidMount() {
     axios
-      .get("https://jsonplaceholder.typicode.com/posts")
+      .get("/posts")
       .then((response) => {
         const { data } = response;
         const posts = data.slice(0, 4);

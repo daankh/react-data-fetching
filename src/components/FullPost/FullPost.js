@@ -12,24 +12,20 @@ class FullPost extends Component {
     const { loadedPost } = this.state;
     if (id) {
       if (!loadedPost || (loadedPost && id !== loadedPost.id)) {
-        axios
-          .get(`https://jsonplaceholder.typicode.com/posts/${id}`)
-          .then((response) => {
-            const { data } = response;
-            this.setState({
-              loadedPost: data,
-            });
+        axios.get(`/posts/${id}`).then((response) => {
+          const { data } = response;
+          this.setState({
+            loadedPost: data,
           });
+        });
       }
     }
   }
 
   deletePostHandler = (id) => {
-    axios
-      .delete(`https://jsonplaceholder.typicode.com/posts/${id}`)
-      .then((response) => {
-        console.log(response);
-      });
+    axios.delete(`/posts/${id}`).then((response) => {
+      console.log(response);
+    });
   };
 
   render() {
